@@ -14,6 +14,7 @@ import {
 import { AmbientBackdrop } from "@/components/AmbientBackdrop";
 import { AuthNotice } from "@/components/AuthNotice";
 import { Countdown } from "@/components/Countdown";
+import { ShareCapsuleButton } from "@/components/ShareCapsuleButton";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { formatDateTime, isUnlocked } from "@/lib/time";
 
@@ -181,13 +182,10 @@ export default function CapsuleDetailClient({ capsuleId }) {
                     )}
                     Нээх хуудас
                   </Link>
-                  <Link
-                    href={`/capsules/${capsule.id}/unlock`}
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-4 text-sm font-semibold text-white transition hover:bg-white/12"
-                  >
-                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    Link хуваалцах
-                  </Link>
+                  <ShareCapsuleButton
+                    capsuleId={capsule.id}
+                    isPublic={capsule.is_public}
+                  />
                 </div>
               </div>
             </div>

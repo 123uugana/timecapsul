@@ -177,7 +177,7 @@ export default function NewCapsulePage() {
               </label>
 
               <label className="block text-sm font-medium text-slate-200">
-                Хүлээн авагчийн имэйл
+                Найзын имэйл
                 <input
                   className="form-field mt-2"
                   type="email"
@@ -196,10 +196,23 @@ export default function NewCapsulePage() {
                 onChange={(event) => setIsPublic(event.target.checked)}
               />
               <span>
-                Нээгдсэний дараа public болгох. Private capsule зөвхөн таны
-                account дээр харагдана.
+                Найзууд link-ээр үзэж болох public capsule болгох. Нээгдэх өдөр
+                хүртэл message түгжээтэй хэвээр байна.
               </span>
             </label>
+
+            {recipientEmail ? (
+              <div className="glass-soft rounded-lg p-4 text-sm leading-6 text-slate-200">
+                <p className="font-medium text-white">Найздаа зориулсан capsule</p>
+                <p className="mt-1 text-slate-300">
+                  Нээгдэх цаг болоход notification email
+                  <span className="mx-1 font-medium text-amber-100">
+                    {recipientEmail}
+                  </span>
+                  рүү илгээгдэхээр хадгалагдана.
+                </p>
+              </div>
+            ) : null}
 
             {error ? <p className="text-sm text-rose-200">{error}</p> : null}
 
