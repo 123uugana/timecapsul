@@ -1,6 +1,43 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { LockKeyhole, Sparkles } from "lucide-react";
+import { getTimeParts } from "@/lib/time";
+
+function getDemoUnlockDate() {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() + 5);
+  date.setHours(12, 0, 0, 0);
+  return date;
+}
+
+function formatPreviewDate(date) {
+  return new Intl.DateTimeFormat("mn-MN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
 
 export function CapsulePreview() {
+  const unlockDate = useMemo(() => getDemoUnlockDate(), []);
+  const [parts, setParts] = useState(() => getTimeParts(unlockDate));
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setParts(getTimeParts(unlockDate));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [unlockDate]);
+
+  const countdownBlocks = [
+    ["Өдөр", parts.days],
+    ["Цаг", parts.hours],
+    ["Мин", parts.minutes],
+    ["Сек", parts.seconds],
+  ];
+
   return (
     <div className="glass reveal-card relative min-h-[460px] overflow-hidden rounded-2xl p-6">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200/60 to-transparent" />
@@ -11,7 +48,9 @@ export function CapsulePreview() {
           <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">
             Нээгдэх өдөр
           </p>
-          <p className="mt-2 text-2xl font-semibold text-white">May 12, 2031</p>
+          <p className="mt-2 text-2xl font-semibold text-white">
+            {formatPreviewDate(unlockDate)}
+          </p>
         </div>
         <div className="rounded-lg bg-white/10 p-3 text-amber-200">
           <LockKeyhole className="h-6 w-6" aria-hidden="true" />
@@ -31,16 +70,16 @@ export function CapsulePreview() {
       </div>
 
       <div className="mt-12 grid grid-cols-4 gap-2">
-        {["1826", "04", "18", "09"].map((value, index) => (
+        {countdownBlocks.map(([label, value]) => (
           <div
-            key={value}
+            key={label}
             className="countdown-tile rounded-lg bg-black/24 p-3 text-center"
           >
             <p className="font-mono text-2xl font-semibold text-white">
-              {value}
+              {String(value).padStart(2, "0")}
             </p>
             <p className="mt-1 text-[0.64rem] uppercase tracking-[0.16em] text-slate-400">
-              {["Days", "Hrs", "Min", "Sec"][index]}
+              {label}
             </p>
           </div>
         ))}
