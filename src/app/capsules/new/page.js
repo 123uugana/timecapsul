@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CalendarPlus, LockKeyhole } from "lucide-react";
+import { ArrowLeft, CalendarPlus, LockKeyhole, ShieldAlert } from "lucide-react";
 import { AmbientBackdrop } from "@/components/AmbientBackdrop";
 import { AuthNotice } from "@/components/AuthNotice";
 import { Button } from "@/components/Button";
@@ -27,6 +27,7 @@ export default function NewCapsulePage() {
   const [isPublic, setIsPublic] = useState(false);
   const [profile, setProfile] = useState(null);
   const [capsuleCount, setCapsuleCount] = useState(0);
+  const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -200,6 +201,40 @@ export default function NewCapsulePage() {
                 хүртэл message түгжээтэй хэвээр байна.
               </span>
             </label>
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowPrivacyNotice((current) => !current)}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-amber-200/20 bg-amber-300/10 px-4 text-sm font-semibold text-amber-100 transition hover:bg-amber-300/16"
+              >
+                <ShieldAlert className="h-4 w-4" aria-hidden="true" />
+                Privacy анхааруулга
+              </button>
+
+              {showPrivacyNotice ? (
+                <div className="mt-4 rounded-xl border border-amber-200/18 bg-black/24 p-5 text-sm leading-6 text-slate-200">
+                  <p className="font-semibold text-white">
+                    Capsule-ээ share хийхээс өмнө үүнийг мэдээрэй.
+                  </p>
+                  <ul className="mt-3 space-y-2 text-slate-300">
+                    <li>
+                      Private capsule бол зөвхөн таны account дээр харагдана.
+                    </li>
+                    <li>
+                      Public capsule бол link авсан хүн unlock page-г үзэж чадна.
+                    </li>
+                    <li>
+                      Нээгдэх өдөр болоогүй үед message түгжээтэй, blur хэвээр байна.
+                    </li>
+                    <li>
+                      Найзын имэйл оруулбал notification илгээхэд ашиглана. Public
+                      page дээр энэ имэйл харагдахгүй.
+                    </li>
+                  </ul>
+                </div>
+              ) : null}
+            </div>
 
             {recipientEmail ? (
               <div className="glass-soft rounded-lg p-4 text-sm leading-6 text-slate-200">
