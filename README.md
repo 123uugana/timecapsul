@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Digital Time Capsule Social
 
-## Getting Started
+A Next.js App Router + Supabase MVP for text-only future message capsules.
 
-First, run the development server:
+## Features
+
+- Landing page with cinematic dark glassmorphism styling
+- Email/password login and signup with Supabase Auth
+- Dashboard for private capsule management
+- Create text capsules for yourself or a recipient email
+- Capsule detail page with countdown and locked blur state
+- Public/private unlock page that reveals the message after the unlock date
+- AI Memory Experience section for unlocked capsules:
+  cinematic narration text, emotional rewrite, and social share card copy
+- MNT pricing page and Stripe Checkout-ready payment route:
+  Free 0₮, Premium 15,000₮ / month, AI Cinematic Reveal 3,000₮ one-time
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create a Supabase project and run the SQL in `supabase/schema.sql`.
+
+3. Copy `.env.example` to `.env.local` and add your Supabase values:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+NEXT_PUBLIC_APP_URL=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+```
+
+4. Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Notes
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+This MVP intentionally supports text capsules only. Voice, video, AI generation,
+notifications, and delivery automation are left out so the core product is clean.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The database schema revokes direct `message` column reads from browser roles and
+uses `get_unlocked_capsule_message` to return capsule text only after the unlock
+date for the owner or for public capsules.
 
-## Learn More
+`/api/capsules/[id]/memory-experience` is the prepared backend endpoint for the
+AI Memory Experience. It currently uses a deterministic local text generator and
+caches results in `ai_memory_experiences`, so a real text AI provider can be
+added later without changing the UI contract. Voice and video APIs are not
+connected in this MVP.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pricing amounts live in `src/lib/pricing.js`. Stripe checkout uses currency
+`mnt`; the checkout route keeps a clear replacement point for a future QPay
+invoice integration.
