@@ -93,6 +93,7 @@ export default function NewCapsulePage() {
         unlock_date: unlockAt.toISOString(),
         is_public: isPublic,
         recipient_email: recipientEmail || null,
+        notification_email: recipientEmail || user.email,
       })
       .select("id")
       .single();

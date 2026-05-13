@@ -27,8 +27,16 @@ create table if not exists public.capsules (
   unlock_date timestamptz not null,
   is_public boolean not null default false,
   recipient_email text,
+  notification_email text,
+  notified_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+alter table public.capsules
+  add column if not exists notification_email text;
+
+alter table public.capsules
+  add column if not exists notified_at timestamptz;
 
 create table if not exists public.ai_memory_experiences (
   id uuid primary key default gen_random_uuid(),
@@ -192,11 +200,36 @@ revoke update on public.profiles from authenticated;
 grant update (username, avatar_url) on public.profiles to authenticated;
 grant select on public.profiles to anon;
 
-grant select (id, user_id, title, unlock_date, is_public, recipient_email, created_at)
+grant select (
+  id,
+  user_id,
+  title,
+  unlock_date,
+  is_public,
+  recipient_email,
+  notification_email,
+  notified_at,
+  created_at
+)
   on public.capsules to anon, authenticated;
-grant insert (user_id, title, message, unlock_date, is_public, recipient_email)
+grant insert (
+  user_id,
+  title,
+  message,
+  unlock_date,
+  is_public,
+  recipient_email,
+  notification_email
+)
   on public.capsules to authenticated;
-grant update (title, message, unlock_date, is_public, recipient_email)
+grant update (
+  title,
+  message,
+  unlock_date,
+  is_public,
+  recipient_email,
+  notification_email
+)
   on public.capsules to authenticated;
 grant delete on public.capsules to authenticated;
 revoke select (message) on public.capsules from anon, authenticated;
