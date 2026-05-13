@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { LockKeyhole, Sparkles } from "lucide-react";
 import { getTimeParts } from "@/lib/time";
 
@@ -33,22 +33,33 @@ function formatPreviewDate(date) {
 }
 
 export function CapsulePreview() {
-  const unlockDate = useMemo(() => getDemoUnlockDate(), []);
-  const [parts, setParts] = useState(() => getTimeParts(unlockDate));
+  const [preview, setPreview] = useState({
+    unlockDate: null,
+    parts: null,
+  });
 
   useEffect(() => {
+    const unlockDate = getDemoUnlockDate();
+    const updatePreview = () => {
+      setPreview({
+        unlockDate,
+        parts: getTimeParts(unlockDate),
+      });
+    };
+
+    updatePreview();
     const timer = window.setInterval(() => {
-      setParts(getTimeParts(unlockDate));
+      updatePreview();
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [unlockDate]);
+  }, []);
 
   const countdownBlocks = [
-    ["Өдөр", parts.days],
-    ["Цаг", parts.hours],
-    ["Мин", parts.minutes],
-    ["Сек", parts.seconds],
+    ["Өдөр", preview.parts?.days],
+    ["Цаг", preview.parts?.hours],
+    ["Мин", preview.parts?.minutes],
+    ["Сек", preview.parts?.seconds],
   ];
 
   return (
@@ -62,7 +73,9 @@ export function CapsulePreview() {
             Нээгдэх өдөр
           </p>
           <p className="mt-2 text-2xl font-semibold text-white">
-            {formatPreviewDate(unlockDate)}
+            {preview.unlockDate
+              ? formatPreviewDate(preview.unlockDate)
+              : "Бэлдэж байна..."}
           </p>
         </div>
         <div className="rounded-lg bg-white/10 p-3 text-amber-200">
@@ -89,7 +102,7 @@ export function CapsulePreview() {
             className="countdown-tile rounded-lg bg-black/24 p-3 text-center"
           >
             <p className="font-mono text-2xl font-semibold text-white">
-              {String(value).padStart(2, "0")}
+              {value === undefined ? "--" : String(value).padStart(2, "0")}
             </p>
             <p className="mt-1 text-[0.64rem] uppercase tracking-[0.16em] text-slate-400">
               {label}
