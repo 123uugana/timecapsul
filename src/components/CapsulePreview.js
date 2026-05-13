@@ -4,6 +4,21 @@ import { useEffect, useMemo, useState } from "react";
 import { LockKeyhole, Sparkles } from "lucide-react";
 import { getTimeParts } from "@/lib/time";
 
+const mongolianMonths = [
+  "нэгдүгээр сар",
+  "хоёрдугаар сар",
+  "гуравдугаар сар",
+  "дөрөвдүгээр сар",
+  "тавдугаар сар",
+  "зургаадугаар сар",
+  "долоодугаар сар",
+  "наймдугаар сар",
+  "есдүгээр сар",
+  "аравдугаар сар",
+  "арван нэгдүгээр сар",
+  "арван хоёрдугаар сар",
+];
+
 function getDemoUnlockDate() {
   const date = new Date();
   date.setFullYear(date.getFullYear() + 5);
@@ -12,11 +27,9 @@ function getDemoUnlockDate() {
 }
 
 function formatPreviewDate(date) {
-  return new Intl.DateTimeFormat("mn-MN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
+  return `${date.getFullYear()} оны ${
+    mongolianMonths[date.getMonth()]
+  } ${date.getDate()}`;
 }
 
 export function CapsulePreview() {
