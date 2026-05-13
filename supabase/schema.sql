@@ -207,8 +207,6 @@ grant select (
   unlock_date,
   is_public,
   recipient_email,
-  notification_email,
-  notified_at,
   created_at
 )
   on public.capsules to anon, authenticated;
